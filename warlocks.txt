@@ -1,0 +1,11 @@
+warlocks
+{
+	"base"		"base"
+	"title"		"Warlocks: Ultimate Push Party"
+	"maps"		"^wl_"
+	"menusystem"	"1"
+
+	"settings"
+	{		
+	}
+}
