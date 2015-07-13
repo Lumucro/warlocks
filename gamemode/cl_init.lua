@@ -6,6 +6,40 @@ include( "cl_hud.lua" )
 
 local roundtime = 0
 local lasttick = CurTime()
+local showplayertime = 0
+local winnerpanel = nil
+
+local function ShowPlayerWon()
+
+	winnerpanel = vgui.Create( "DPanel" )
+	winnerpanel:SetPos( ScrW() / 2 - 150, ScrH() / 2 - 150 )
+	winnerpanel:SetSize( 300, 180 )
+
+	local avatar = vgui.Create( "AvatarImage", winnerpanel )
+	avatar:SetPlayer( GAMEMODE.winner )
+	avatar:SetSize( 100, 100 )
+	avatar:Dock( TOP )
+	avatar:DockMargin( 100, 4, 100, 4 )
+
+	local winner = vgui.Create( "DLabel", winnerpanel )
+	winner:SetText( "ROUND WON BY" )
+	winner:Dock( TOP )
+	winner:DockMargin( 0, 4, 0, 0 )
+	winner:SetFont( "ScoreboardDefault" )
+	winner:SizeToContents()
+	winner:SetContentAlignment( 5 )
+
+	local name = vgui.Create( "DLabel", winnerpanel )
+	name:SetText( GAMEMODE.winner:Nick() )
+	name:Dock( TOP )
+	name:DockMargin( 0, 8, 0, 4 )
+	name:SetSize( 300, 30 )
+	name:SetFont( "ScoreboardDefaultTitle" )
+	name:SetContentAlignment( 5 )
+
+	winnerpanel:SetBackgroundColor( Color( 100, 100, 100, 0 ) )
+
+end
 
 function GetRoundState()
 
@@ -36,6 +70,19 @@ function GetRoundTime()
 
 end
 
+function SetRoundWinner( p )
+
+	if !IsValid( p ) || !p:IsPlayer() then return end
+	GAMEMODE.winner = p
+	
+	showplayertime = CurTime() + 5
+	ShowPlayerWon()
+	if winnerpanel != nil then
+		winnerpanel:Show()
+	end
+
+end
+
 function GM:Initialize()
 
 	GAMEMODE.roundstate = ROUND_WAITING
@@ -50,6 +97,12 @@ function GM:Think()
 		if (roundtime - 1) <= 0 then return end
 		roundtime = roundtime - 1
 
+	end
+
+	if showplayertime <= CurTime() then
+		if winnerpanel != nil then
+			winnerpanel:Hide()
+		end
 	end
 
 end

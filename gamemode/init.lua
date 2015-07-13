@@ -17,6 +17,7 @@ util.AddNetworkString( "PlayerGotKill" )
 util.AddNetworkString( "PlayerDied" )
 util.AddNetworkString( "UpdateRoundState" )
 util.AddNetworkString( "RoundTimeLeft" )
+util.AddNetworkString( "AnnounceWinner" )
 
 local minply = 2
 local layers = {}
@@ -158,6 +159,7 @@ function EndRound( ply )
 	if ply != nil then
 		ply:AddFrags( 1 )
 		print( ply:Nick() .. " has won the game" )
+		AnnounceWinner( ply )
 	end
 
 	SetRoundState( ROUND_OVER )
@@ -208,6 +210,10 @@ local function CheckForPlayers()
 		StartRoundPreparation()
 	end
 
+	if playersready == 0 && GetRoundState() != ROUND_WAITING then
+		SetRoundState( ROUND_WAITING )
+	end
+
 	print( "checked players, " .. playersready .. " ready (rs: " .. GetRoundState() .. ")" )
 
 end
@@ -218,6 +224,12 @@ function GetRoundState()
 
 end
 
+function GetCurrentRound()
+
+	return GAMEMODE.currentround
+
+end
+
 function SetRoundState( state )
 
 	GAMEMODE.roundstate = state
@@ -225,34 +237,44 @@ function SetRoundState( state )
 	if state == ROUND_WAITING then
 
 		if not timer.Start( "waitforplayers" ) then
-	      timer.Create( "waitforplayers", 2, 0, CheckForPlayers )
+	    	timer.Create( "waitforplayers", 2, 0, CheckForPlayers )
 		end
 
 		print( "waiting for players (rs: " .. GetRoundState() .. ")" )
 
 	elseif state == ROUND_READY then
 
-		layers = {}
-		currentdrop = 1
-		warndropcolor = false
-		
-		game.CleanUpMap( false, {} ) 
+		if #player.GetAll() >= 2 then
 
-		print( "round preparing (rs: " .. GetRoundState() .. ")" )
+			layers = {}
+			currentdrop = 1
+			warndropcolor = false
+			
+			game.CleanUpMap( false, {} ) 
 
-		for k,v in pairs( player.GetAll() ) do
+			print( "round preparing (rs: " .. GetRoundState() .. ")" )
 
-			v:Spawn()
-			v:StripWeapons()
-			v:Give( "weapon_wl_unarmed" )
+			for k,v in pairs( player.GetAll() ) do
+
+				v:Spawn()
+				v:StripWeapons()
+				v:Give( "weapon_wl_unarmed" )
+
+			end
+
+			timer.Simple( 10, function()
+				StartRound()
+			end )
+
+			UpdateTimeLeft( 10 )
+
+		else
+
+			if not timer.Start( "waitforplayers" ) then
+	     		timer.Create( "waitforplayers", 2, 0, CheckForPlayers )
+			end
 
 		end
-
-		timer.Simple( 10, function()
-			StartRound()
-		end )
-
-		UpdateTimeLeft( 10 )
 
 	elseif state == ROUND_INPROGRESS then
 		
@@ -272,6 +294,7 @@ function SetRoundState( state )
 		roundstart_time = CurTime()
 		nextdrop = roundstart_time + 10
 		GAMEMODE.currentround = GAMEMODE.currentround + 1
+		print( GetCurrentRound() )
 
 	end
 

@@ -49,8 +49,8 @@ end
 
 function AnnounceWinner( p )
 
-	net.Start( "AnnounceRoundWinner" )
-		net.WriteString( p )
+	net.Start( "AnnounceWinner" )
+		net.WriteEntity( p )
 	net.Broadcast()
 
 end
