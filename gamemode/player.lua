@@ -21,7 +21,6 @@ function GM:PlayerInitialSpawn( ply )
 
 	if GAMEMODE.roundstate >= 2 then
 
-		GAMEMODE:PlayerSpawnAsSpectator( ply )
 		ply:KillSilent()
 
 	end

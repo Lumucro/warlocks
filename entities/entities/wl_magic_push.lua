@@ -67,6 +67,8 @@ function ENT:Think()
 
 		end
 
+		if self:WaterLevel() > 0 then self:Explode() end
+
 	end
 
 end
