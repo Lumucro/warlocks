@@ -21,11 +21,13 @@ util.AddNetworkString( "AnnounceWinner" )
 
 local minply = 2
 local layers = {}
+local endphase = nil
 local roundstart_time = CurTime()
 local nextdrop = roundstart_time + 10
 local currentdrop = 1
 local warndropcolor = false
 local leaderboard = {}
+local gameover = false
 
 local function StartRound()
 
@@ -35,13 +37,19 @@ end
 
 local function StartRoundPreparation()
 
-	SetRoundState( ROUND_READY )
+	if gameover then
+		if GetRoundState() == 5 then return end
+		SetRoundState( 5 )
+	else
+		SetRoundState( ROUND_READY )
+	end
 
 end
 
 function GM:Initialize()
 
 	SetRoundState( ROUND_WAITING )
+	GAMEMODE.currentround = 0
 
 	if not timer.Start( "checkplayersalive" ) then
 	    timer.Create( "checkplayersalive", 2, 0, function()
@@ -62,8 +70,6 @@ function GM:Initialize()
 
 	    end )
 	end
-
-	GAMEMODE.currentround = 0
 
 end
 
@@ -232,6 +238,10 @@ end
 
 function SetRoundState( state )
 
+	if GAMEMODE.currentround == nil then
+		GAMEMODE.currentround = 0
+	end
+	
 	GAMEMODE.roundstate = state
 
 	if state == ROUND_WAITING then
@@ -262,11 +272,25 @@ function SetRoundState( state )
 
 			end
 
+			if gameover then
+				PrintMessage( HUD_PRINTTALK, "Round limit reached (10), ending game.")
+				print("ending game")
+				UpdateRoundState( 5 )
+				print("calling hook")
+				hook.Call("wgcc_fin_nextgamemode")
+				return
+			end
+
 			timer.Simple( 10, function()
 				StartRound()
 			end )
 
 			UpdateTimeLeft( 10 )
+
+			if math.random( 0, 100 ) >= 75 && IsValid( endphase ) then
+				endphase:Fire( "open", 0 )
+				PrintMessage( HUD_PRINTTALK, "---Special round! Endphase activated.---" )
+			end
 
 		else
 
@@ -294,15 +318,22 @@ function SetRoundState( state )
 		roundstart_time = CurTime()
 		nextdrop = roundstart_time + 10
 		GAMEMODE.currentround = GAMEMODE.currentround + 1
-		print( GetCurrentRound() )
 
 	end
 
 	UpdateRoundState()
+	print(GetCurrentRound())
+	if GetCurrentRound() >= 10 then
+		gameover = true
+	end
 
 end
 
 function GM:EntityKeyValue( ent, key, value ) 
+
+	if ent:GetName() == "pillar" && !IsValid( endphase ) then
+		endphase = ent
+	end
 
 	if key == "arenalayer" then
 		

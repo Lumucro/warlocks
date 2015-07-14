@@ -10,7 +10,9 @@ local function GetRoundStateHUD()
 	elseif GetRoundState() == ROUND_INPROGRESS then
 		return "Soul harvest in progress"
 	elseif GetRoundState() == ROUND_OVER then
-		return "Retrieving warlocks from hell"
+		return "Preparing fresh warlocks"
+	elseif GetRoundState() == 5 then
+		return "Game has ended, go to hell"
 	end
 
 end
