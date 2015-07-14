@@ -272,15 +272,6 @@ function SetRoundState( state )
 
 			end
 
-			if gameover then
-				PrintMessage( HUD_PRINTTALK, "Round limit reached (10), ending game.")
-				print("ending game")
-				UpdateRoundState( 5 )
-				print("calling hook")
-				hook.Call("wgcc_fin_nextgamemode")
-				return
-			end
-
 			timer.Simple( 10, function()
 				StartRound()
 			end )
@@ -319,11 +310,22 @@ function SetRoundState( state )
 		nextdrop = roundstart_time + 10
 		GAMEMODE.currentround = GAMEMODE.currentround + 1
 
+	elseif state == ROUND_OVER then
+
+		if gameover then			
+			PrintMessage( HUD_PRINTTALK, "Round limit reached (10), ending game.")
+			print("ending game")
+			UpdateRoundState( 5 )
+			print("calling hook")
+			hook.Call("wgcc_fin_nextgamemode")
+		end
+
 	end
 
 	UpdateRoundState()
+
 	print(GetCurrentRound())
-	if GetCurrentRound() >= 10 then
+	if GetCurrentRound() >= 10 && !gameover then
 		gameover = true
 	end
 
