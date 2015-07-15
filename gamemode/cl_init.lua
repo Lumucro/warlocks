@@ -8,11 +8,13 @@ local roundtime = 0
 local lasttick = CurTime()
 local showplayertime = 0
 local winnerpanel = nil
+local showdiedtime = CurTime() + 100
+local diedpanel = nil
 
 local function ShowPlayerWon()
 
 	winnerpanel = vgui.Create( "DPanel" )
-	winnerpanel:SetPos( ScrW() / 2 - 150, ScrH() / 2 - 150 )
+	winnerpanel:SetPos( ScrW() / 2 - 150, ScrH() / 2 - 90 )
 	winnerpanel:SetSize( 300, 180 )
 
 	local avatar = vgui.Create( "AvatarImage", winnerpanel )
@@ -38,6 +40,53 @@ local function ShowPlayerWon()
 	name:SetContentAlignment( 5 )
 
 	winnerpanel:SetBackgroundColor( Color( 100, 100, 100, 0 ) )
+
+end
+
+local function ShowAsscat()
+
+	diedpanel = vgui.Create( "DPanel" )
+	diedpanel:SetPos( ScrW() / 2 - 250, ScrH() / 2 - 250 )
+	diedpanel:SetSize( 500, 500 )
+
+	local asscat = vgui.Create( "DImage", diedpanel )
+	asscat:SetImage( "warlocks/asscatevilwitch_plsgivebonuspoints.png", "vgui/avatar_default" )
+	asscat:SetSize( 300, 300 )
+	asscat:Dock( TOP )
+	asscat:DockMargin( 100, 4, 100, 4 )
+
+	local winner = vgui.Create( "DLabel", diedpanel )
+	winner:SetText( "YOU PATHETIC WARLOCK" )
+	winner:Dock( TOP )
+	winner:DockMargin( 0, 4, 0, 0 )
+	winner:SetFont( "ScoreboardDefault" )
+	winner:SizeToContents()
+	winner:SetContentAlignment( 5 )
+
+	local name = vgui.Create( "DLabel", diedpanel )
+	name:SetText( "FEAR THE ASIAN ASSCAT" )
+	name:Dock( TOP )
+	name:DockMargin( 0, 8, 0, 4 )
+	name:SetSize( 300, 30 )
+	name:SetFont( "ScoreboardDefaultTitle" )
+	name:SetContentAlignment( 5 )
+
+	local truth = vgui.Create( "DLabel", diedpanel )
+	truth:SetText( "bonus points?" )
+	truth:Dock( BOTTOM )
+	truth:DockMargin( 0, 4, 0, 0 )
+	truth:SetFont( "TinyHiddenMessage" )
+	truth:SizeToContents()
+	truth:SetContentAlignment( 5 )
+
+	diedpanel:SetBackgroundColor( Color( 100, 100, 100, 0 ) )
+
+end
+
+function SetPlayerDied()
+
+	showdiedtime = CurTime() + 3
+	ShowAsscat()
 
 end
 
@@ -102,6 +151,16 @@ function GM:Think()
 	if showplayertime <= CurTime() then
 		if winnerpanel != nil then
 			winnerpanel:Hide()
+		end
+	end
+
+	if GAMEMODE.winner != nil && diedpanel != nil then
+		diedpanel:Hide()
+	end
+
+	if showdiedtime <= CurTime() then
+		if diedpanel != nil then
+			diedpanel:Hide()
 		end
 	end
 

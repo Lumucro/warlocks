@@ -7,6 +7,8 @@ AddCSLuaFile( "shared.lua" )
 
 resource.AddFile( "materials/botondtextures/ConcreteWornPaint004.vtf" ) 
 resource.AddFile( "materials/botondtextures/ConcreteWornPaint004_slip.vmt" ) 
+--resource.AddFile( "materials/warlocks/asscat.png" ) Let's try a little more desperate below (I JUST WANTED GLOD MEMBER OK)
+resource.AddFile( "materials/warlocks/asscatevilwitch_plsgivebonuspoints.png" ) 
 resource.AddFile( "sound/warlocks/justdoit_countdown.wav" ) 
 
 include( "shared.lua" )

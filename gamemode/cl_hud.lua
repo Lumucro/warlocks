@@ -1,3 +1,9 @@
+surface.CreateFont( "TinyHiddenMessage", {
+	font	= "Helvetica",
+	size	= 8,
+	weight	= 800
+} )
+
 local xcenter = ScrW() / 2
 local ycenter = ScrH() / 2
 

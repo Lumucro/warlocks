@@ -1,3 +1,11 @@
+/*
+	shamelessly taken from base gamemode and edited
+	not sure if allowed because i'd be using the base gamemode scoreboard by default
+	figured i'd just edit it a bit and leave it at that
+	if not, sorry, disregard scoreboard :(
+*/
+
+
 surface.CreateFont( "ScoreboardDefault", {
 	font	= "Helvetica",
 	size	= 22,

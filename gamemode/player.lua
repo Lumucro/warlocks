@@ -19,7 +19,7 @@ end
 
 function GM:PlayerInitialSpawn( ply ) 
 
-	if GAMEMODE.roundstate >= 2 then
+	if GAMEMODE.roundstate >= ROUND_INPROGRESS then
 
 		ply:KillSilent()
 
@@ -27,6 +27,9 @@ function GM:PlayerInitialSpawn( ply )
 
 	ply.doublejumped = false
 	ply.jumping = false
+
+	UpdateRoundStateSingle( ply )
+	UpdateTimeLeftSingle( ply, 10 )
 
 end
 

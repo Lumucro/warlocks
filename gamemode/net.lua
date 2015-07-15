@@ -39,11 +39,27 @@ function UpdateRoundState()
 
 end
 
+function UpdateRoundStateSingle( ply )
+
+	net.Start( "UpdateRoundState" )
+		net.WriteInt( GetRoundState(), 8 )
+	net.Send( ply )
+
+end
+
 function UpdateTimeLeft( time )
 
 	net.Start( "RoundTimeLeft" )
 		net.WriteInt( time, 8 )
 	net.Broadcast()
+
+end
+
+function UpdateTimeLeftSingle( ply, time )
+
+	net.Start( "RoundTimeLeft" )
+		net.WriteInt( time, 8 )
+	net.Send( ply )
 
 end
 
